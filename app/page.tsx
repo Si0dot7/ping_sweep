@@ -8,13 +8,13 @@ export default function Home() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleUpload = (e) => {
+  const handleUpload = (e: any) => {
     const file = e.target.files[0];
     if (!file) return;
     setLoading(true);
     const reader = new FileReader();
 
-    reader.onload = (event) => {
+    reader.onload = (event: any) => {
       try {
         const json = JSON.parse(event.target.result);
         setTimeout(() => {

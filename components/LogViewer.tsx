@@ -1,6 +1,6 @@
 "use client";
 
-export default function LogViewer({ logs }) {
+export default function LogViewer({ logs }: { logs: any[] }) {
   return (
     <div className="border p-5 rounded bg-white shadow">
       <h2 className="text-2xl font-bold mb-4">Log Viewer</h2>

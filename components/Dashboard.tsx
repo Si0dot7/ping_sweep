@@ -8,7 +8,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-export default function Dashboard({ logs }) {
+export default function Dashboard({ logs }: { logs: any[] }) {
   const [summary, setSummary] = useState({
     total: 0,
     normal: 0,
@@ -26,7 +26,7 @@ export default function Dashboard({ logs }) {
 
     setSummary({ total, normal, sweep });
 
-    const grouped = {};
+    const grouped: any = {};
     logs.forEach(l => {
       const t = l.timestamp.slice(0, 16);
       if (!grouped[t]) grouped[t] = { time: t, normal: 0, sweep: 0 };
