@@ -1,82 +1,71 @@
 "use client";
 
 import { useState } from "react";
-import Dashboard from "@/components/Dashboard";
-import LogViewer from "@/components/LogViewer";
-import Head from "next/head";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 
-export default function Home() {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(false);
+export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const handleUpload = (e: any) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setLoading(true);
-    const reader = new FileReader();
-
-    reader.onload = (event: any) => {
-      try {
-        const json = JSON.parse(event.target.result);
-        setTimeout(() => {
-          setLogs(json);
-          setLoading(false);   // เพิ่มตรงนี้
-        }, 100);
-
-      } catch (err) {
-        alert("ไฟล์ไม่ใช่ JSON หรือรูปแบบผิด");
-      }
-    };
-
-    reader.readAsText(file);
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    if (username === "admin" && password === "123") {
+      document.cookie = "token=123; path=/";
+      router.push("/dash");
+      ;
+    }
   };
 
   return (
-    <main className="bg-blue-900 min-h-screen w-full p-6 flex justify-center">
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className="w-full max-w-6xl space-y-6">
+    <main className="bg-blue-900 min-h-screen w-full flex flex-col items-center">
 
-        {/* Upload Section */}
-        <div className="border p-5 rounded bg-white shadow">
-          <h2 className="ml-26 text-xl font-semibold mb-2">Upload Log File</h2>
-          <div className="flex flex-wrap items-center justify-between">
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleUpload}
-              className="ml-28 border p-2 w-full sm:w-auto"
-            />
+      <div className="w-full flex justify-center px-4 mt-10">
+        <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 space-y-6">
 
-            <Image
-              src="/favicon.ico"
-              width={280}
-              height={40}
-              alt="fav"
-              className="object-contain mr-28"
-            />
+          <div className="flex justify-center">
+            <Image src="/favicon.ico" width={80} height={80} alt="logo" />
           </div>
 
+          <h2 className="text-2xl font-bold text-center text-gray-700">
+            Login to Dashboard
+          </h2>
+
+          <form className="space-y-4" onSubmit={handleLogin}>
+            <div>
+              <label className="block text-sm font-semibold mb-1">Email</label>
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1">Password</label>
+              <input
+                type="password"
+                className="w-full border rounded p-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-700 text-white py-2 rounded-lg font-semibold hover:bg-blue-800 transition"
+            >
+              Login
+            </button>
+          </form>
         </div>
-
-        {/* Dashboard + Viewer */}
-        {loading && (
-          <div className="flex justify-center items-center py-10">
-            <div className="animate-spin h-10 w-10 border-4 border-white border-t-transparent rounded-full"></div>
-          </div>
-        )}
-
-        {!loading && logs.length > 0 && (
-          <>
-            <Dashboard logs={logs} />
-            <LogViewer logs={logs} />
-          </>
-        )}
-
-
       </div>
+
     </main>
   );
 }

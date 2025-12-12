@@ -14,6 +14,11 @@ export default function LogViewer({ logs }: { logs: any[] }) {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [chartData, setChartData] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const paginatedLogs = logs.slice((page - 1) * pageSize, page * pageSize);
+
+  const totalPages = Math.ceil(logs.length / pageSize);
 
   // Counter
   const attackCount: Record<string, number> = {};
@@ -137,7 +142,7 @@ export default function LogViewer({ logs }: { logs: any[] }) {
           </thead>
 
           <tbody>
-            {logs.map((l, i) => (
+            {paginatedLogs.map((l, i) => (
               <tr key={i} className="border hover:bg-gray-50">
                 <td className="p-2 border">{l.timestamp}</td>
                 <td className="p-2 border">{l.src_ip}</td>
@@ -154,7 +159,31 @@ export default function LogViewer({ logs }: { logs: any[] }) {
               </tr>
             ))}
           </tbody>
+
+
         </table>
+        <div className="flex justify-between items-center mt-3 text-sm">
+          <button
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Prev
+          </button>
+
+          <p>
+            Page {page} / {totalPages}
+          </p>
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50 cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
+
       </div>
 
       {/* ============================================================
