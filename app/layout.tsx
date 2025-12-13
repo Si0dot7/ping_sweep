@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Arthcial Inteligence-Based Network Scanning Analysis System",
-  description: "ping sweep model monitor",
+  description: "Arthcial Inteligence-Based Network Scanning Analysis System",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
