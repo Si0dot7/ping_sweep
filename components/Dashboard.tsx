@@ -1,24 +1,56 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import {
-  LineChart, Line,
-  XAxis, YAxis,
-  Tooltip, CartesianGrid,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
   ResponsiveContainer
 } from "recharts";
 
+type Summary = {
+  total: number;
+  normal: number;
+  sweep: number;
+};
+
+type ChartRow = {
+  time: string;
+  ts: number;
+  normal: number;
+  sweep: number;
+};
+
 export default function Dashboard({ logs }: { logs: any[] }) {
-  const [summary, setSummary] = useState({
+  const [summary, setSummary] = useState<Summary>({
     total: 0,
     normal: 0,
     sweep: 0
   });
 
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<ChartRow[]>([]);
+
+  function formatMinute(ts: string) {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return null;
+
+    return (
+      d.getFullYear() + "-" +
+      String(d.getMonth() + 1).padStart(2, "0") + "-" +
+      String(d.getDate()).padStart(2, "0") + " " +
+      String(d.getHours()).padStart(2, "0") + ":" +
+      String(d.getMinutes()).padStart(2, "0")
+    );
+  }
 
   useEffect(() => {
-    if (!logs || logs.length === 0) return;
+    if (!Array.isArray(logs) || logs.length === 0) {
+      setSummary({ total: 0, normal: 0, sweep: 0 });
+      setChartData([]);
+      return;
+    }
 
     const total = logs.length;
     const normal = logs.filter(l => l.label === "normal").length;
@@ -26,15 +58,33 @@ export default function Dashboard({ logs }: { logs: any[] }) {
 
     setSummary({ total, normal, sweep });
 
-    const grouped: any = {};
+    const grouped: Record<string, ChartRow> = {};
+
     logs.forEach(l => {
-      const t = l.timestamp.slice(0, 16);
-      if (!grouped[t]) grouped[t] = { time: t, normal: 0, sweep: 0 };
-      if (l.label === "normal") grouped[t].normal++;
-      if (l.label === "ping_sweep") grouped[t].sweep++;
+      const time = formatMinute(l.timestamp);
+      if (!time) return;
+
+      const ts = new Date(l.timestamp).getTime();
+      if (isNaN(ts)) return;
+
+      if (!grouped[time]) {
+        grouped[time] = {
+          time,
+          ts,
+          normal: 0,
+          sweep: 0
+        };
+      }
+
+      if (l.label === "normal") grouped[time].normal++;
+      if (l.label === "ping_sweep") grouped[time].sweep++;
     });
 
-    setChartData(Object.values(grouped));
+    const sorted = Object.values(grouped).sort(
+      (a, b) => a.ts - b.ts
+    );
+
+    setChartData(sorted);
   }, [logs]);
 
   return (
@@ -68,28 +118,41 @@ export default function Dashboard({ logs }: { logs: any[] }) {
               margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="time" tick={{ fontSize: 10 }} minTickGap={40} />
-              <YAxis />
-              <Tooltip />
+
+              <XAxis
+                dataKey="time"
+                tick={{ fontSize: 10 }}
+                minTickGap={40}
+                tickFormatter={(t) => t.slice(11)} // แสดงแค่ HH:mm
+              />
+
+              <YAxis allowDecimals={false} />
+
+              <Tooltip
+                formatter={(v, name) => [
+                  `${v} ครั้ง`,
+                  name === "normal" ? "Normal" : "Ping Sweep"
+                ]}
+                labelFormatter={(l) => `เวลา ${l}`}
+              />
 
               <Line
                 type="monotone"
                 dataKey="normal"
-                stroke="#0084ff"
+                stroke="#2563eb"
                 strokeWidth={2}
                 dot={false}
               />
               <Line
                 type="monotone"
                 dataKey="sweep"
-                stroke="#ff0000"
+                stroke="#dc2626"
                 strokeWidth={2}
                 dot={false}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
-
       </div>
     </div>
   );
