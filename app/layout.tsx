@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "ping sweep model monitor",
+  title: "Arthcial Inteligence-Based Network Scanning Analysis System",
   description: "ping sweep model monitor",
 };
 

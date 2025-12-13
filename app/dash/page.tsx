@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 export default function Dash() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const isEmpty = !loading && logs.length === 0;
 
   const handleUpload = (e: any) => {
     const file = e.target.files[0];
@@ -49,6 +50,7 @@ export default function Dash() {
       <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
 
         {/* Upload Section */}
+        {!isEmpty &&
         <div className="border p-5 rounded bg-white shadow">
           <h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
             Upload Log File
@@ -68,10 +70,39 @@ export default function Dash() {
               width={200}
               height={40}
               alt="fav"
-              className="object-contain"
+              className="object-contain "
             />
           </div>
         </div>
+        }
+        {/* Empty State */}
+        {isEmpty && (
+          <div className="flex flex-col items-center justify-center text-white">
+            <Image
+              src="/favicon.ico"
+              width={200}
+              height={40}
+              alt="fav"
+              className="object-contain py-15"
+            />
+            <h2 className="text-2xl font-semibold mb-2">
+              No log file uploaded
+            </h2>
+            <p className="mb-6 opacity-80 text-center">
+              Upload log file to start analysis
+            </p>
+
+            <label className="cursor-pointer bg-white text-blue-900 px-6 py-3 rounded shadow">
+              Upload Log File
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+        )}
 
         {/* Dashboard */}
         {loading && (

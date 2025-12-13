@@ -15,7 +15,7 @@ export default function Navbar() {
 
     return (
         <nav className="w-full h-16 bg-white shadow-md px-6 flex justify-between items-center fixed top-0 left-0 z-50">
-            <h1 className="text-xl font-bold text-gray-700">Ping Sweep Model</h1>
+            <h1 className="text-xl font-bold text-gray-700">Arthcial Inteligence-Based Network Scanning Analysis System</h1>
 
             {!hideLogout && (
                 <button

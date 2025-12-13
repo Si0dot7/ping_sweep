@@ -17,12 +17,15 @@ export default function LoginPage() {
       router.push("/dash");
       ;
     }
+    else{
+      alert("Username or Password is not correct")
+    }
   };
 
   return (
-    <main className="bg-blue-900 min-h-screen w-full flex flex-col items-center">
+    <main className="bg-blue-900 min-h-screen w-full flex flex-col items-center rounded-sm border-blue-950 border-2">
 
-      <div className="w-full flex justify-center px-4 mt-10">
+      <div className="w-full flex justify-center px-4 mt-25">
         <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 space-y-6">
 
           <div className="flex justify-center">
